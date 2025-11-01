@@ -49,10 +49,7 @@ def expense(n):
         print("\n")
 
 # View Data
-def view():
-    n = int(input("Enter the type of data to view (1)income / (2)expenses):"))
-    dicts = {1:"income",2:"expenses"}
-    tab = dicts[n]
+def view(tab):
     cursor = mysql.cursor()
     query = f"select * from {tab} ;"
     cursor.execute(query)
@@ -62,7 +59,7 @@ def view():
     print(datas)
 
 #Summary
-def summary():
+def summary(tab):
     cursor = mysql.cursor()
     query = "select IFNULL(sum(amount),0)from income ;"
     cursor.execute(query)
@@ -84,9 +81,6 @@ def summary():
     print(" "*40+"Category / month based total amount ")
 
 
-    n = int(input("Enter the type of data to view (1)income / (2)expenses):"))
-    dicts = {1:"income",2:"expenses"}
-    tab=dicts[n]
 
     print("Category Based : \n")
     # Category Based total amount
@@ -111,10 +105,7 @@ def summary():
 
 
 #Search
-def search():
-    n = int(input("1)income / 2)expense to search "))
-    tab_name={1:"income",2:"expenses"}
-    tab = tab_name[n]
+def search(tab):
     choice = int(input("1) date_on , 2) category 3)amount 4)payment_mode : "))
     col_name = {1:"date_on",2:"category",3:"amount",4:"payment_mode"}
     search = col_name[choice]
@@ -159,16 +150,11 @@ def search():
         print(f"No such column present in {tab}")
 
 #Update Records
-def update():
+def update(tab):
     col_dict = {1:"date_on",2:"category",3:"amount",4:"payment_mode"}
-    dicts= {1:"income",2:"expenses"}
     n = int(input("Enter the column to update : 1)date / 2)category 3)amount 4)payment_mode :"))
-    choice = int(input("1) income / 2) expense :"))
-
     cursor = mysql.cursor()
     try:
-
-       tab = dicts[choice]
        col_name = col_dict[n]
        if choice == 1 and n == 4:
            print(f"No such column in {tab} ")
@@ -192,12 +178,10 @@ def update():
         print("Successfully updated")
 
 #Delete Records
-def delete():
+def delete(tab):
     cursor = mysql.cursor()
-    n = int(input("Enter the 1) Income /2) Expense - record to be deleted :"))
-    col = {1: "income", 2: "expenses"}
     id = int(input("Enter the id :"))
-    tab = col[n]
+
     try:
         query = f"delete from {tab} where id = '{id}';"
         cursor.execute(query)
@@ -207,7 +191,7 @@ def delete():
     else:
         print("Successfully Deleted")
 
-#Main Program 
+#Main Program
 
 n=1
 while True:
@@ -215,6 +199,9 @@ while True:
     print(" "*55+"Choose Your Plan ")
     print(" 1)Add Income \n 2) Add Expense \n 3) View All Records \n 4) view Summary \n 5) Search Records \n 6) Update Record \n 7) Delete Record \n 8) Exit  ")
     choice = int(input("Enter your choice : "))
+    n = int(input("Enter the type of data to view (1)income / (2)expenses):"))
+    dicts = {1: "income", 2: "expenses"}
+    tab = dicts[n]
     match choice:
         case 1:
             print("Add Income ")
@@ -227,21 +214,20 @@ while True:
             expense(n)
         case 3:
             print("View All Records")
-            view()
+            view(tab)
         case 4:
             print("View Summary")
-            summary()
+            summary(tab)
         case 5:
             print("Search Records")
-            search()
+            search(tab)
         case 6:
             print("Update Records")
-            update()
+            update(tab)
         case 7:
             print("Delete Records")
-            delete()
+            delete(tab)
         case 8:
-            print("Exit")
             exit()
         case _:
             print("You have entered the invalid Option")
